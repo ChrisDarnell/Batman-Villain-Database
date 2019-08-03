@@ -139,15 +139,20 @@ $stmt->close();
 			</fieldset>	
 		</form>
 
-
-<!-- ADD  -->
 		
-		
-		
-		<form method="post" action="addVillain.php">
+		<form method="post" action="addStatus.php">
 			<fieldset>
-				<legend>ADD A New Villain Identity</legend>
-				<p>True First Name (required): <input class="hideme" type="text" name="fname" /></p>
+				<legend>Add A New Status</legend>
+				<p>Status Description: <input type="text" name="status" /></p>
+				<p><input type="submit" name="addstatus"/> </p>
+			</fieldset>
+		</form>
+
+<!-- ADD  True ID-->	
+		<form method="post" action="addCharacter.php">
+			<fieldset>
+				<legend>ADD A New Character</legend>
+				<p>True First Name (required): <input  type="text" name="fname" /></p>
 				<p>True Last Name: <input type="text" name = "lname" /> </p> 
 				<p>Status: <select name="status">
 <!--Populate dropdown with all statuses -->
@@ -173,7 +178,7 @@ $stmt->close();
 				</select> </p>	
 				<p>Pseudonym:
 				
-<!--Populate dropdown with available villains -->
+<!--Populate checkboxes with available villains -->
 <?php
 
 if (!($stmt = $mysqli->prepare("SELECT id, pseudonym FROM villain"))) {
@@ -222,11 +227,110 @@ while ($stmt->fetch()){
 $stmt->close();
 ?>
 				</p>
-				</select>
 				<p><input type="submit" name="addtrueid" value="Add Villain"/> </p>
 			</fieldset>
 		</form>
-</div>
+		
+		
+<!-- ADD  Villain -->	
+		<form method="post" action="addVillain.php">
+			<fieldset>
+				<legend>ADD A New Villain</legend>
+				<p>Villain pseudonym (required): <input  type="text" name="pseudonym" /></p>
+				<p>Character Associations: </p>
+<p>				
+<!--Create a checkbox for all possible Characters -->
+<?php
+
+if (!($stmt = $mysqli->prepare("SELECT id, first_name, last_name FROM true_id"))) {
+	echo "prepare failed:" . $stmt->errno . " " . $stmt->error;
+}
+
+if(!$stmt->execute()){
+	echo "execute failed:" . $stmt->errno . " " . $stmt->error;
+
+}
+
+if (!$stmt->bind_result($id, $first_name, $last_name)){
+	echo "bind failed:" . $stmt->errno . " " . $stmt->error;
+
+}
+while ($stmt->fetch()){
+	echo "<div> <input type=checkbox value=" . $id . "\" name=\"characters[]\" /> ";
+	echo "<label for=\"" . $id . "\">" . $first_name . " " . $last_name . "</label> </div>";
+
+}
+$stmt->close();
+?>
+				</p>
+				<p>Creator(s): </p>
+<p>				
+<!--Create a checkbox for all possible Creators -->
+<?php
+
+if (!($stmt = $mysqli->prepare("SELECT id, first_name, last_name FROM creator"))) {
+	echo "prepare failed:" . $stmt->errno . " " . $stmt->error;
+}
+
+if(!$stmt->execute()){
+	echo "execute failed:" . $stmt->errno . " " . $stmt->error;
+
+}
+
+if (!$stmt->bind_result($cid, $first_name, $last_name)){
+	echo "bind failed:" . $stmt->errno . " " . $stmt->error;
+
+}
+while ($stmt->fetch()){
+	echo "<div> <input type=checkbox value=" . $cid . "\" name=\"creators[]\" /> ";
+	echo "<label for=\"" . $cid . "\">" . $first_name . " " . $last_name . "</label> </div>";
+
+}
+$stmt->close();
+?>
+				</p>
+				<p><input type="submit" name="addvillain" value="Add Villain"/> </p>
+			</fieldset>
+		</form>
+		
+<!-- ADD  Creator -->	
+		<form method="post" action="addCreator.php">
+			<fieldset>
+				<legend>ADD A New Creator</legend>
+				<p>First Name: <input  type="text" name="firstname" /></p>
+				<p>Last Name: <input  type="text" name="lastname" /></p>
+				<p>Date of Birth (must be DD-MM-YYYY): <input  type="text" name="dob" value="DD-MM-YYYY" /></p>
+				<p>Villain(s) created: </p>
+<p>				
+<!--Create a checkbox for all possible Villains -->
+<?php
+
+if (!($stmt = $mysqli->prepare("SELECT id, pseudonym FROM villain"))) {
+	echo "prepare failed:" . $stmt->errno . " " . $stmt->error;
+}
+
+if(!$stmt->execute()){
+	echo "execute failed:" . $stmt->errno . " " . $stmt->error;
+
+}
+
+if (!$stmt->bind_result($id, $pseudonym)){
+	echo "bind failed:" . $stmt->errno . " " . $stmt->error;
+
+}
+while ($stmt->fetch()){
+	echo "<div> <input type=checkbox value=" . $id . "\" name=\"vids[]\" /> ";
+	echo "<label for=\"" . $id . "\">" . $pseudonym . "</label> </div>";
+
+}
+$stmt->close();
+?>
+				</p>
+				<p><input type="submit" name="addvillain" value="Add Villain"/> </p>
+			</fieldset>
+		</form>
+		
+		</div>
 <div id="footer"></div>
 <script src="js/footer.js"></script>
 
